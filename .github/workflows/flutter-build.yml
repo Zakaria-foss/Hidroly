@@ -23,10 +23,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Flutter
+      - name: Set up Flutter (stable channel)
         uses: subosito/flutter-action@v2
         with:
-          channel: "3.28.0"  # تحديد نسخة Flutter مباشرة لتجنب مشاكل stable
+          channel: stable
+
+      - name: Upgrade Flutter to specific version
+        run: flutter version 3.28.0
 
       - name: Flutter pub get
         run: flutter pub get
@@ -55,3 +58,4 @@ jobs:
       #   with:
       #     name: hidroly-aab
       #     path: build/app/outputs/bundle/release/*.aab
+
