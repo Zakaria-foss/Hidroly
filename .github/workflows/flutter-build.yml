@@ -1,0 +1,57 @@
+name: Build Flutter Android APK
+
+on:
+  push:
+    branches: [ main ]    # غيّر إلى 'master' لو فرعك اسمه master
+  workflow_dispatch: {}   # يتيح تشغيل الـ workflow يدوياً من صفحة Actions
+
+jobs:
+  build-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: 'true'
+          fetch-depth: 0
+
+      - name: Set up Java (required for Android)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Flutter analyze (non-fatal)
+        run: flutter analyze || true
+
+      - name: Run tests (non-fatal)
+        run: flutter test || true
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: hidroly-apk
+          path: build/app/outputs/flutter-apk/*.apk
+
+      # ---- إن أردت بناء App Bundle (AAB) أيضاً، أزل التعليقات هنا ----
+      # - name: Build App Bundle
+      #   run: flutter build appbundle --release
+      #
+      # - name: Upload AAB artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: hidroly-aab
+      #     path: build/app/outputs/bundle/release/*.aab
