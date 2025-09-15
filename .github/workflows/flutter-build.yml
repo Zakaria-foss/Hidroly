@@ -2,8 +2,8 @@ name: Build Flutter Android APK
 
 on:
   push:
-    branches: [ main ]    # غيّر إلى 'master' إذا كان فرعك اسمه master
-  workflow_dispatch: {}   # يتيح تشغيل الـ workflow يدوياً من صفحة Actions
+    branches: [ main ]    # فرعك الرئيسي
+  workflow_dispatch: {}   # لتشغيل الـ workflow يدوياً من GitHub
 
 jobs:
   build-apk:
@@ -26,7 +26,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 3.28.0  # نسخة مستقرة حديثة
+          channel: "3.28.0"  # تحديد نسخة Flutter مباشرة لتجنب مشاكل stable
 
       - name: Flutter pub get
         run: flutter pub get
@@ -46,7 +46,7 @@ jobs:
           name: hidroly-apk
           path: build/app/outputs/flutter-apk/*.apk
 
-      # ---- إن أردت بناء App Bundle (AAB) أيضاً ----
+      # ---- اختياري: بناء App Bundle (AAB) ----
       # - name: Build App Bundle
       #   run: flutter build appbundle --release
       #
