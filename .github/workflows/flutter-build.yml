@@ -1,13 +1,13 @@
-name: Build Flutter Android APK
+name: Build Flutter Debug APK
 
 on:
   push:
-    branches: [ main ]    # فرعك الرئيسي
-  workflow_dispatch: {}   # لتشغيل الـ workflow يدوياً من GitHub
+    branches: [ main ]
+  workflow_dispatch: {}
 
 jobs:
-  build-apk:
-    name: Build Android APK
+  build-debug-apk:
+    name: Build Debug APK
     runs-on: ubuntu-latest
 
     steps:
@@ -28,12 +28,6 @@ jobs:
         with:
           channel: stable
 
-      # ---- اختياري: تثبيت نسخة Flutter محددة ----
-      # - name: Force Flutter version
-      #   run: |
-      #     git -C $HOME/flutter checkout 3.28.0
-      #     flutter doctor
-
       - name: Flutter pub get
         run: flutter pub get
 
@@ -43,21 +37,11 @@ jobs:
       - name: Run tests (non-fatal)
         run: flutter test || true
 
-      - name: Build release APK
-        run: flutter build apk --release
+      - name: Build Debug APK
+        run: flutter build apk --debug --target-platform android-arm,android-arm64,android-x64
 
-      - name: Upload APK artifact
+      - name: Upload Debug APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: hidroly-apk
+          name: hidroly-debug-apk
           path: build/app/outputs/flutter-apk/*.apk
-
-      # ---- اختياري: بناء App Bundle (AAB) ----
-      # - name: Build App Bundle
-      #   run: flutter build appbundle --release
-      #
-      # - name: Upload AAB artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: hidroly-aab
-      #     path: build/app/outputs/bundle/release/*.aab
